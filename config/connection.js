@@ -2,8 +2,10 @@
 const Sequelize = require('sequelize');
 require('dotenv').config();
 
-// set up jaws.db
+// establish connection
 let sequelize;
+
+// set up jaws.db
 if (process.env.JAWSDB_URL) {
     sequelize = new Sequelize(process.env.JAWSDB_URL);
 } else {

@@ -1,3 +1,3 @@
-drop database if exists blog_db;
+drop database if exists tech_blog;
 
-create database blog_db;
+create database tech_blog;
