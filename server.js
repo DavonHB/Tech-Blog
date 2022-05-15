@@ -2,13 +2,13 @@
 const express = require('express');
 const path = require('path');
 const exphbs = require('express-handlebars');
+const helpers = require('./utils/helpers');
 const hbs = exphbs.create({ helpers });
 const session = require('express-session');
 const sequelize = require('./config/connection');
 
 // import files
 const routes = require('./controllers')
-const helpers = require('./utils/helpers')
 
 // initialize
 const app = express();
