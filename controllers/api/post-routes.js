@@ -4,24 +4,29 @@ const { Post, User, Comment } = require('../../models');
 const sequelize = require('../../config/connection');
 const withAuth = require('../../utils/auth');
 
+// get all posts
 router.get('/', (req, res) => {
-    console.log('======================');
+
     Post.findAll({
+        // from the post table, include these attributes
         attributes: [
             'id',
             'title',
             'content',
             'created_at'
         ],
+        // order posts from most recent to least
         order: [
             ['created_at']
         ],
         include: [
+            // from User table, include post creator's username
             {
             model: User,
             attributes: ['username']
         },
         {
+            //from Comment table, include all comments
             model: Comment,
             attributes: [
                 'id',
@@ -37,18 +42,23 @@ router.get('/', (req, res) => {
         }
         ]
     })
+    // return posts in JSON format
     .then(dbPostData => res.json(dbPostData.reverse()))
+    // catch server error
     .catch(err => {
         console.log(err);
         res.status(500).json(err);
     })
 });
 
+// get a single post by id
 router.get('/:id', (req, res) => {
     Post.findOne({
         where: {
+            // specify post id parameter
             id: req.params.id
         },
+        // from the post table, include these attributes
         attributes: [
             'id',
             'content',
@@ -77,19 +87,23 @@ router.get('/:id', (req, res) => {
     ]
     })
     .then(dbPostData => {
+        // if no posts are returned by that id, return an error
         if (!dbPostData) {
             res.status(404).json({ message: 'No post found'});
             return;
         }
         res.json(dbPostData);
     })
+    // catch error
     .catch(err => {
         console.log(err);
         res.status(500).json(err);
     })
 });
 
+// post new post
 router.post('/', withAuth, (req, res) => {
+    // expects objects 
     Post.create({
         title: req.body.title,
         content: req.body.content,
@@ -102,6 +116,7 @@ router.post('/', withAuth, (req, res) => {
     });
 });
 
+// update post
 router.put('/:id', withAuth, (req, res) => {
     Post.update({
         title: req.body.title,
@@ -124,6 +139,7 @@ router.put('/:id', withAuth, (req, res) => {
     })
 });
 
+// delete post
 router.delete('/:id', withAuth, (req, res) => {
     Post.destroy({
         where: {
